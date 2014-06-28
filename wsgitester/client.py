@@ -2,13 +2,14 @@
 import argparse
 import sys
 
-from .tests import test_lookup
+from .tests import *
 
 #
 #
 #
 
 argparser = argparse.ArgumentParser(description="Test WSGI Servers")
+argparser.add_argument('--skip')
 argparser.add_argument('url')
 
 #
@@ -16,36 +17,54 @@ argparser.add_argument('url')
 #
 
 class TestContext(object):
-    def __init__(self, url):
+    def __init__(self, url, skiplist):
         self.url = url
+        self.skiplist = skiplist
 
     def test_url(self, name):
         return "%s%s"%(self.url, name)
 
-def main():
-    args = argparser.parse_args()
+def run_test(ctx, test):
+    if test.name in ctx.skiplist:
+        return TestSkip()
 
-    so = sys.stdout
-    ctx = TestContext(args.url)
+    return test().run(ctx)
+
+def run_all_tests(ctx, stdout=None):
+    if stdout is None:
+        stdout = sys.stdout
 
     for test in test_lookup:
         line = "%s"%test.name
-        so.write(line)
-        so.flush()
+        stdout.write(line)
+        stdout.flush()
 
         try:
-            rv = test().run(ctx)
+            result = run_test(ctx, test)
         except Exception as e:
-            # TODO catch and handle instead of re-raising
-            so.write("\n")
+            # TODO catch and handle inside run_test
+            stdout.write("\n")
             raise
-
-        so.write(" "*(60-len(line)))
-        if rv:
-            so.write("PASS")
+        
+        stdout.write(" "*(60-len(line)))
+        if result:
+            if isinstance(result, TestSkip):
+                stdout.write("SKIP")
+            else:
+                stdout.write("PASS")
         else:
-            so.write("FAIL")
-        so.write("\n")
+            stdout.write("FAIL")
+        stdout.write("\n")
 
-        if rv.msg:
-            so.write("    %s\n"%(rv.msg,))
+        if result.msg:
+            stdout.write("    %s\n"%(result.msg,))
+
+def main():
+    args = argparser.parse_args()
+
+    if args.skip:
+        skiplist = [s.strip() for s in args.skip.split(",")]
+    else:
+        skiplist = []
+
+    run_all_tests(TestContext(args.url, skiplist))

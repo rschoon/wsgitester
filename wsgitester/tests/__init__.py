@@ -4,7 +4,7 @@ import requests
 import six
 
 
-__all__ = ['test_lookup', 'Test', 'TestFail', 'TestPass']
+__all__ = ['test_lookup', 'Test', 'TestFail', 'TestPass', 'TestSkip']
 
 class TestLookup(object):
     def __init__(self, *test_imports):
@@ -38,6 +38,12 @@ class TestResult(object):
     def __init__(self, msg=None):
         self.msg = msg
 
+    def __bool__(self):
+        return True
+
+    def __nonzero__(self):
+        return True
+
 class TestFail(TestResult):
     def __bool__(self):
         return False
@@ -46,11 +52,11 @@ class TestFail(TestResult):
         return False
 
 class TestPass(TestResult):
-    def __bool__(self):
-        return True
+    pass
 
-    def __nonzero__(self):
-        return True
+class TestSkip(TestResult):
+    pass
+
 
 #
 #
