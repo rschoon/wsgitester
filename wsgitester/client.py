@@ -33,7 +33,12 @@ def main():
         so.write(line)
         so.flush()
 
-        rv = test().run(ctx)
+        try:
+            rv = test().run(ctx)
+        except Exception as e:
+            # TODO catch and handle instead of re-raising
+            so.write("\n")
+            raise
 
         so.write(" "*(60-len(line)))
         if rv:
@@ -42,3 +47,5 @@ def main():
             so.write("FAIL")
         so.write("\n")
 
+        if rv.msg:
+            so.write("    %s\n"%(rv.msg,))
