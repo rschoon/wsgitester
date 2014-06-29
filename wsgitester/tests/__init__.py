@@ -12,7 +12,7 @@ class TestLookup(object):
         self.tests = None
 
     def register(self, cls):
-        cls.name = "%s.%s"%(cls.__module__, cls.__name__)
+        cls.name = "%s:%s"%(cls.__module__, cls.__name__)
         self.tests[cls.name] = cls
 
     def load_tests(self):
@@ -94,8 +94,8 @@ class Test(object):
 
 test_lookup = TestLookup(
     'wsgitester.tests.basic',
-#    'wsgitester.tests.types',
-#    'wsgitester.tests.input'
+    'wsgitester.tests.types',
+    'wsgitester.tests.input'
 )
 
 
