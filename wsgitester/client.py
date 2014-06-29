@@ -11,14 +11,16 @@ from .tests import *
 argparser = argparse.ArgumentParser(description="Test WSGI Servers")
 argparser.add_argument('--skip')
 argparser.add_argument('url')
+argparser.add_argument('tests', nargs='*')
 
 #
 #
 #
 
 class TestContext(object):
-    def __init__(self, url, skiplist):
+    def __init__(self, url, tests, skiplist):
         self.url = url
+        self.tests = tests
         self.skiplist = skiplist
 
     def test_url(self, name):
@@ -35,6 +37,10 @@ def run_all_tests(ctx, stdout=None):
         stdout = sys.stdout
 
     for test in test_lookup:
+        if len(ctx.tests) > 0:
+            if test.name not in ctx.tests:
+                continue
+
         line = "%s"%test.name
         stdout.write(line)
         stdout.flush()
@@ -67,4 +73,4 @@ def main():
     else:
         skiplist = []
 
-    run_all_tests(TestContext(args.url, skiplist))
+    run_all_tests(TestContext(args.url, args.tests, skiplist))
