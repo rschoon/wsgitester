@@ -5,12 +5,21 @@ class HelloTest(Test):
     DATA = 'Hello, World.\n'
 
     def __call__(self, environ, start_response):
-        start_response('200 OK', 
-                   [('Content-type','text/plain')])
+        start_response('200 OK',
+                       [('Content-type', 'text/plain')])
         return [self.DATA.encode('utf-8')]
-        
+
     def verify(self, response):
         return response.text == self.DATA
+
+class EmptyIterTest(Test):
+    def __call__(self, environ, start_response):
+        start_response('200 OK',
+                   [('Content-type', 'text/plain')])
+        return []
+
+    def verify(self, response):
+        return len(response.content) == 0
 
 class ContentTypePNG(Test):
     DATA = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00' \
@@ -20,7 +29,7 @@ class ContentTypePNG(Test):
 
     def __call__(self, environ, start_response):
         start_response('200 OK',
-                   [('Content-type','image/png')])
+                   [('Content-type', 'image/png')])
         return [self.DATA]
 
     def verify(self, response):
@@ -31,8 +40,43 @@ class ContentTypeJSON(Test):
 
     def __call__(self, environ, start_response):
         start_response('200 OK',
-                   [('Content-type','application/json')])
+                   [('Content-type', 'application/json')])
         return [self.DATA.encode('utf-8')]
+
+    def verify(self, response):
+        return response.text == self.DATA
+
+class IteratorTest(Test):
+    DATA = 'Hello, World.\n'
+
+    def __call__(self, environ, start_response):
+        start_response('200 OK',
+                   [('Content-type', 'text/plain')])
+        yield self.DATA.encode('utf-8')
+
+    def verify(self, response):
+        return response.text == self.DATA
+
+class EmptyBytesIteratorTest(Test):
+    DATA = 'Hello, World.\n'
+
+    def __call__(self, environ, start_response):
+        yield b''
+        start_response('200 OK',
+                   [('Content-type', 'text/plain')])
+        yield self.DATA.encode('utf-8')
+
+    def verify(self, response):
+        return response.text == self.DATA
+
+class WriteTest(Test):
+    DATA = 'Hello, World.\n'
+
+    def __call__(self, environ, start_response):
+        write = start_response('200 OK',
+                   [('Content-type','text/plain')])
+        write(self.DATA.encode('utf-8'))
+        return []
 
     def verify(self, response):
         return response.text == self.DATA
