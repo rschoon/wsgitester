@@ -212,11 +212,6 @@ class PostNulTestBase(Test):
 class PostNulTest(PostNulTestBase):
     def __call__(self, environ, start_response):
         if environ['REQUEST_METHOD'] == 'POST':
-            content_type, charset = parse_content_type(environ)
-            if content_type != "application/x-www-form-urlencoded":
-                return self.err(start_response,
-                                "Didn't get expected Content-Type")
-
             data = environ['wsgi.input'].read()
 
             start_response("200 OK", [
@@ -232,11 +227,6 @@ class PostNulTest(PostNulTestBase):
 class PostLineNulTest(PostNulTestBase):
     def __call__(self, environ, start_response):
         if environ['REQUEST_METHOD'] == 'POST':
-            content_type, charset = parse_content_type(environ)
-            if content_type != "application/x-www-form-urlencoded":
-                return self.err(start_response,
-                                "Didn't get expected Content-Type")
-
             data = environ['wsgi.input'].readline()
 
             start_response("200 OK", [
@@ -252,11 +242,6 @@ class PostLineNulTest(PostNulTestBase):
 class PostExactReadNulTest(PostNulTestBase):
     def __call__(self, environ, start_response):
         if environ['REQUEST_METHOD'] == 'POST':
-            content_type, charset = parse_content_type(environ)
-            if content_type != "application/x-www-form-urlencoded":
-                return self.err(start_response,
-                                "Didn't get expected Content-Type")
-
             data = environ['wsgi.input'].read(4)
 
             start_response("200 OK", [
