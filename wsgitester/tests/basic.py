@@ -46,7 +46,7 @@ class ContentTypeJSON(Test):
     def verify(self, response):
         assert response.text == self.DATA
 
-class IteratorTest(Test):
+class GeneratorTest(Test):
     DATA = 'Hello, World.\n'
 
     def __call__(self, environ, start_response):
@@ -57,7 +57,7 @@ class IteratorTest(Test):
     def verify(self, response):
         assert response.text == self.DATA
 
-class EmptyBytesIteratorTest(Test):
+class EmptyBytesPreStartTest(Test):
     DATA = 'Hello, World.\n'
 
     def __call__(self, environ, start_response):
