@@ -74,3 +74,6 @@ def main():
         skiplist = []
 
     run_all_tests(TestContext(args.url, args.tests, skiplist))
+
+if __name__=='__main__':
+    main()
