@@ -7,7 +7,7 @@ class Application(object):
     def __init__(self):
         self.test_lookup = test_lookup
 
-    RE_TEST_PATH = re.compile(r'(?P<sn>^/?(?P<t>[^/]+))($|/?)')
+    RE_TEST_PATH = re.compile(r'(?P<sn>^/?(?P<t>[^/]+))/')
 
     def try_test(self, environ, start_response):
         script_name = environ.get('SCRIPT_NAME', '')

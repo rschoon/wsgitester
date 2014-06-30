@@ -24,7 +24,7 @@ class TestContext(object):
         self.skiplist = skiplist
 
     def test_url(self, name):
-        return "%s%s"%(self.url, name)
+        return "%s%s/"%(self.url, name)
 
 def run_test(ctx, test):
     if test.name in ctx.skiplist:
