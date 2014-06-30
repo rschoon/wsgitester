@@ -12,6 +12,16 @@ class HelloTest(Test):
     def verify(self, response):
         assert response.text == self.DATA
 
+class UnnamedArgsTest(Test):
+    def __call__(self, *args):
+        args[1]('200 OK', [('Content-type', 'text/plain')])
+        if len(args) != 2:
+            return [b"FAIL"]
+        return [b"PASS"]
+
+    def verify(self, response):
+        assert response.text == "PASS"
+
 class EmptyIterTest(Test):
     def __call__(self, environ, start_response):
         start_response('200 OK',
