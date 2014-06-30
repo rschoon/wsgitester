@@ -9,8 +9,12 @@ class HelloTest(Test):
                        [('Content-type', 'text/plain')])
         return [self.DATA.encode('utf-8')]
 
-    def verify(self, response):
-        assert response.text == self.DATA
+    def verify(self, resp):
+        if resp.status_code != 200:
+            return TestFail("Got status code %d" % resp.status_code)
+
+        if resp.text != self.DATA:
+            return TestFail("Didn't get expected text %r"%self.DATA)
 
 class UnnamedArgsTest(Test):
     def __call__(self, *args):
@@ -19,8 +23,12 @@ class UnnamedArgsTest(Test):
             return [b"FAIL"]
         return [b"PASS"]
 
-    def verify(self, response):
-        assert response.text == "PASS"
+    def verify(self, resp):
+        if resp.status_code != 200:
+            return TestFail("Got status code %d" % resp.status_code)
+
+        if resp.text != "PASS":
+            return TestFail("Didn't get expected text 'PASS'")
 
 class EmptyIterTest(Test):
     def __call__(self, environ, start_response):
@@ -28,8 +36,12 @@ class EmptyIterTest(Test):
                    [('Content-type', 'text/plain')])
         return []
 
-    def verify(self, response):
-        assert len(response.content) == 0
+    def verify(self, resp):
+        if resp.status_code != 200:
+            return TestFail("Got status code %d" % resp.status_code)
+
+        if len(resp.content) > 0:
+            return TestFail("Expected empty content, but got %d bytes"%len(resp.content))
 
 class ContentTypePNG(Test):
     DATA = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00' \
@@ -42,8 +54,12 @@ class ContentTypePNG(Test):
                    [('Content-type', 'image/png')])
         return [self.DATA]
 
-    def verify(self, response):
-        assert response.content == self.DATA
+    def verify(self, resp):
+        if resp.status_code != 200:
+            return TestFail("Got status code %d" % resp.status_code)
+
+        if resp.content != self.DATA:
+            return TestFail("Got %d bytes instead of expected response"%len(resp.content))
 
 class ContentTypeJSON(Test):
     DATA = "{'var':'value','arr':[1,2,3]}"
@@ -53,8 +69,12 @@ class ContentTypeJSON(Test):
                    [('Content-type', 'application/json')])
         return [self.DATA.encode('utf-8')]
 
-    def verify(self, response):
-        assert response.text == self.DATA
+    def verify(self, resp):
+        if resp.status_code != 200:
+            return TestFail("Got status code %d" % resp.status_code)
+
+        if resp.text != self.DATA:
+            return TestFail("Got %d bytes instead of expected response"%len(resp.content))
 
 class GeneratorTest(Test):
     DATA = 'Hello, World.\n'
@@ -64,8 +84,12 @@ class GeneratorTest(Test):
                    [('Content-type', 'text/plain')])
         yield self.DATA.encode('utf-8')
 
-    def verify(self, response):
-        assert response.text == self.DATA
+    def verify(self, resp):
+        if resp.status_code != 200:
+            return TestFail("Got status code %d" % resp.status_code)
+
+        if resp.text != self.DATA:
+            return TestFail("Got %d bytes instead of expected response"%len(resp.content))
 
 class EmptyBytesPreStartTest(Test):
     DATA = 'Hello, World.\n'
@@ -76,8 +100,12 @@ class EmptyBytesPreStartTest(Test):
                    [('Content-type', 'text/plain')])
         yield self.DATA.encode('utf-8')
 
-    def verify(self, response):
-        assert response.text == self.DATA
+    def verify(self, resp):
+        if resp.status_code != 200:
+            return TestFail("Got status code %d" % resp.status_code)
+
+        if resp.text != self.DATA:
+            return TestFail("Got %d bytes instead of expected response"%len(resp.content))
 
 class WriteTest(Test):
     DATA = 'Hello, World.\n'
@@ -88,5 +116,9 @@ class WriteTest(Test):
         write(self.DATA.encode('utf-8'))
         return []
 
-    def verify(self, response):
-        assert response.text == self.DATA
+    def verify(self, resp):
+        if resp.status_code != 200:
+            return TestFail("Got status code %d" % resp.status_code)
+
+        if resp.text != self.DATA:
+            return TestFail("Got %d bytes instead of expected response"%len(resp.content))
