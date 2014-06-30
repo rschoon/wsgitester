@@ -9,7 +9,7 @@ class EnvironTypes(Test):
 
     def __call__(self, environ, start_response):
         def err(msg):
-            start_respone("200 OK", [("Content-Type", "text/plain")])
+            start_response("200 OK", [("Content-Type", "text/plain")])
             return [msg.encode('utf-8')]
 
         if not isinstance(environ, dict):
