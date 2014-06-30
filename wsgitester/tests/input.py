@@ -9,6 +9,9 @@ from . import *
 
 def parse_content_type(environ):
     content_type = environ.get("CONTENT_TYPE")
+    if content_type is None:
+        return None, None
+
     result = content_type.split("; ")
     if len(result) == 1:
         return result[0], None
@@ -180,6 +183,10 @@ class PostNulTestBase(Test):
 
     def expected_data(self):
         return self.data()
+
+    def err(self, start_response, msg):
+        start_response('200 OK', [('Content-type', 'application/json')])
+        return [json.dumps({'err': msg}).encode('utf-8')]
 
     def verify(self, resp):
         if resp.status_code != 200:
