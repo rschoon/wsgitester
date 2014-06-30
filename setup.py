@@ -9,6 +9,10 @@ setup(
     author_email = 'robin@cornhooves.org',
     license = 'MIT',
     packages = find_packages('.'),
+    install_requires=[
+        "six>=1.7",
+        "requests>=2.3"
+    ],
     entry_points = {
         'console_scripts': [
             'wsgitester = wsgitester.client:main'
