@@ -1,5 +1,5 @@
 
-from . import Test
+from . import *
 
 class EnvironTypes(Test):
     REQUIRED = ["REQUEST_METHOD", "SERVER_NAME", "SERVER_PORT",
@@ -106,8 +106,8 @@ class EnvironTypes(Test):
         if not isinstance(value, tuple):
             return "wsgi.version is not a tuple: %s" % repr(value)
 
-        if len(value) < 2:
-            return "wsgi.version's size is too small: %s" % repr(value)
+        if len(value) != 2:
+            return "wsgi.version needs to be composed of (major, minimum), but got: %s" % repr(value)
 
         # I'm not suggesting this is an error with the WSGI gateway, but
         # we're not really remotely in a position to check a server
@@ -144,4 +144,5 @@ class EnvironTypes(Test):
             return "wsgi.file_wrapper is not callable"
 
     def verify(self, response):
-        return response.text.startswith("PASS")
+        if response.text != "PASS":
+            return TestFail(response.text)

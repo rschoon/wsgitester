@@ -202,8 +202,6 @@ class PostNulTestBase(Test):
             return TestFail("Didn't get expected content (%d bytes)" %
                             len(resp.content))
 
-        return TestPass()
-
 class PostNulTest(PostNulTestBase):
     def __call__(self, environ, start_response):
         if environ['REQUEST_METHOD'] == 'POST':

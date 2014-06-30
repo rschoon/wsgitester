@@ -36,6 +36,8 @@ class TestLookup(object):
 
 class TestResult(object):
     def __init__(self, msg=None):
+        if not msg:
+            msg = None
         self.msg = msg
 
     def __bool__(self):
@@ -77,12 +79,17 @@ class Test(object):
 
     def run(self, ctx):
         resp = self.make_request(ctx.test_url(self.name))
-        result = self.verify(resp)
-        if isinstance(result, bool) or result is None:
-            if result:
-                return TestPass()
-            else:
-                return TestFail()
+        try:
+            result = self.verify(resp)
+        except AssertionError as e:
+            result = TestFail(e.msg)
+
+        if result is None:
+            result = TestPass()
+
+        if not isinstance(result, TestResult):
+            result = TestFail("Internal Test Error: Got %r for a test result"%(result, ))
+
         return result
 
     def verify(self, response):

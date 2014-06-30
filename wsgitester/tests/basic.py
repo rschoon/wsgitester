@@ -10,7 +10,7 @@ class HelloTest(Test):
         return [self.DATA.encode('utf-8')]
 
     def verify(self, response):
-        return response.text == self.DATA
+        assert response.text == self.DATA
 
 class EmptyIterTest(Test):
     def __call__(self, environ, start_response):
@@ -19,7 +19,7 @@ class EmptyIterTest(Test):
         return []
 
     def verify(self, response):
-        return len(response.content) == 0
+        assert len(response.content) == 0
 
 class ContentTypePNG(Test):
     DATA = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00' \
@@ -33,7 +33,7 @@ class ContentTypePNG(Test):
         return [self.DATA]
 
     def verify(self, response):
-        return response.content == self.DATA
+        assert response.content == self.DATA
 
 class ContentTypeJSON(Test):
     DATA = "{'var':'value','arr':[1,2,3]}"
@@ -44,7 +44,7 @@ class ContentTypeJSON(Test):
         return [self.DATA.encode('utf-8')]
 
     def verify(self, response):
-        return response.text == self.DATA
+        assert response.text == self.DATA
 
 class IteratorTest(Test):
     DATA = 'Hello, World.\n'
@@ -55,7 +55,7 @@ class IteratorTest(Test):
         yield self.DATA.encode('utf-8')
 
     def verify(self, response):
-        return response.text == self.DATA
+        assert response.text == self.DATA
 
 class EmptyBytesIteratorTest(Test):
     DATA = 'Hello, World.\n'
@@ -67,7 +67,7 @@ class EmptyBytesIteratorTest(Test):
         yield self.DATA.encode('utf-8')
 
     def verify(self, response):
-        return response.text == self.DATA
+        assert response.text == self.DATA
 
 class WriteTest(Test):
     DATA = 'Hello, World.\n'
@@ -79,4 +79,4 @@ class WriteTest(Test):
         return []
 
     def verify(self, response):
-        return response.text == self.DATA
+        assert response.text == self.DATA

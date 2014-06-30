@@ -19,8 +19,6 @@ class ManyChunksTest(Test):
             if resp.content[i:i+16] != b'0123456789abcdef':
                 return TestFail("Invalid bytes near offset %d." % i)
 
-        return TestPass()
-
 class LargeChunkTest(Test):
     def __call__(self, environ, start_response):
         start_response('200 OK',
@@ -35,8 +33,6 @@ class LargeChunkTest(Test):
         for i in range(1024*1024, 16):
             if resp.content[i:i+16] != b'0123456789abcdef':
                 return TestFail("Invalid bytes near offset %d." % i)
-
-        return TestPass()
 
 class LargeOffsettedChunkTest(Test):
     def __call__(self, environ, start_response):
@@ -54,5 +50,3 @@ class LargeOffsettedChunkTest(Test):
         for i in range(1024*256, 16):
             if resp.content[i+10:i+26] != b'0123456789abcdef':
                 return TestFail("Invalid bytes near offset %d." % i)
-
-        return TestPass()
