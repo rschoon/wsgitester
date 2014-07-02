@@ -1,5 +1,6 @@
 
-from . import Test
+import sys
+from . import *
 
 class HelloTest(Test):
     DATA = 'Hello, World.\n'
@@ -91,13 +92,19 @@ class GeneratorTest(Test):
         if resp.text != self.DATA:
             return TestFail("Got %d bytes instead of expected response"%len(resp.content))
 
-class EmptyBytesPreStartTest(Test):
+class BufferHeadersUntilNonEmptyTest(Test):
     DATA = 'Hello, World.\n'
 
     def __call__(self, environ, start_response):
-        yield b''
         start_response('200 OK',
                    [('Content-type', 'text/plain')])
+        yield b''
+
+        try:
+            raise RuntimeError
+        except RuntimeError:
+            start_response('200 OK',
+                       [('Content-type', 'text/plain')], sys.exc_info())
         yield self.DATA.encode('utf-8')
 
     def verify(self, resp):
