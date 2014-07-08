@@ -17,20 +17,6 @@ class HelloTest(Test):
         if resp.text != self.DATA:
             return TestFail("Didn't get expected text %r"%self.DATA)
 
-class UnnamedArgsTest(Test):
-    def __call__(self, *args):
-        args[1]('200 OK', [('Content-type', 'text/plain')])
-        if len(args) != 2:
-            return [b"FAIL"]
-        return [b"PASS"]
-
-    def verify(self, resp):
-        if resp.status_code != 200:
-            return TestFail("Got status code %d" % resp.status_code)
-
-        if resp.text != "PASS":
-            return TestFail("Didn't get expected text 'PASS'")
-
 class EmptyIterTest(Test):
     def __call__(self, environ, start_response):
         start_response('200 OK',

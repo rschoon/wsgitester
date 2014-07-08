@@ -28,12 +28,12 @@ class Application(object):
 
         return test(environ, start_response)
 
-    def __call__(self, environ, start_response):
-        resp = self.try_test(environ, start_response)
+    def __call__(self, env, s_r):
+        resp = self.try_test(env, s_r)
         if resp is not None:
             return resp
 
-        start_response('404 Not Found', [('Content-Type', 'text/plain')])
+        s_r('404 Not Found', [('Content-Type', 'text/plain')])
         return [
             b"404 Not Found\n\n",
             b"SN=", environ.get("SCRIPT_NAME").encode('utf-8'), b'\n',
