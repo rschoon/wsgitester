@@ -103,7 +103,8 @@ test_lookup = TestLookup(
     'wsgitester.tests.basic',
     'wsgitester.tests.types',
     'wsgitester.tests.input',
-    'wsgitester.tests.large'
+    'wsgitester.tests.file_wrapper',
+    'wsgitester.tests.large',
 )
 
 
