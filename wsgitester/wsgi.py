@@ -36,8 +36,8 @@ class Application(object):
         s_r('404 Not Found', [('Content-Type', 'text/plain')])
         return [
             b"404 Not Found\n\n",
-            b"SN=", environ.get("SCRIPT_NAME").encode('utf-8'), b'\n',
-            b"PI=", environ.get("PATH_INFO").encode('utf-8'), b'\n',
+            b"SN=", env.get("SCRIPT_NAME").encode('utf-8'), b'\n',
+            b"PI=", env.get("PATH_INFO").encode('utf-8'), b'\n',
         ]
 
 application = Application()
